@@ -1,10 +1,11 @@
 
 function keyboardButtonPress(event) {
-    const keyPress = event.key;
+    const keyPress = event.key.toLowerCase(); // Convert key to lowercase
     const currentAlphabetElement = document.getElementById('current-alphabet');
     const currentAlphabet = currentAlphabetElement.innerText;
     const expectedAlphabet = currentAlphabet.toLowerCase();
     const wrongKeyElement = document.getElementById(keyPress);
+
 
     if (keyPress === expectedAlphabet) {
         const currentScoreElement = document.getElementById('current-score');
