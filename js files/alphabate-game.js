@@ -1,73 +1,48 @@
 
 function keyboardButtonPress(event) {
-
     const keyPress = event.key;
-
-
-    //get screen alphabet
-
     const currentAlphabetElement = document.getElementById('current-alphabet');
     const currentAlphabet = currentAlphabetElement.innerText;
     const expectedAlphabet = currentAlphabet.toLowerCase();
+    const wrongKeyElement = document.getElementById(keyPress);
 
-
-    //check matched or not
     if (keyPress === expectedAlphabet) {
-        //update score
-
-        //1.get the current score
         const currentScoreElement = document.getElementById('current-score');
-        const currentScoreText = currentScoreElement.innerText;
-        const currentScore = parseInt(currentScoreText);
-        //2.increase the score by 1
-        const newScore = currentScore + 1;
-        //3.show the uppdated score
-        const newScoreString = newScore.toString();
-        currentScoreElement.innerText = newScoreString;
+        const currentScore = parseInt(currentScoreElement.innerText);
+        currentScoreElement.innerText = currentScore + 1;
 
-        //star a new round
+        // Remove orange from the current correct key
         const element = document.getElementById(expectedAlphabet);
         element.classList.remove('bg-orange-400');
+
+        // Remove red from all keys when correct key is pressed
+        const alphabetString = 'abcdefghijklmnopqrstuvwxyz';
+        alphabetString.split('').forEach(letter => {
+            const keyElement = document.getElementById(letter);
+            if (keyElement) keyElement.classList.remove('bg-red-700');
+        });
+
         continueGame();
-    }
-    else {
+    } else {
         const currentLifeElement = document.getElementById('current-life');
-        const currentLifeText = currentLifeElement.innerText;
-        const currentLife = parseInt(currentLifeText);
+        let currentLife = parseInt(currentLifeElement.innerText);
+        currentLifeElement.innerText = --currentLife;
 
-        const life = currentLife - 1;
+        wrongKeyElement.classList.add('bg-red-700');
 
-        if (life != 0) {
-            const lifeString = life.toString();
-            currentLifeElement.innerText = lifeString;
-            const element = document.getElementById(expectedAlphabet);
-            element.classList.remove('bg-orange-400');
+        if (currentLife > 0) {
+            // Remove orange from the current correct key before continuing
+            document.getElementById(expectedAlphabet).classList.remove('bg-orange-400');
             continueGame();
+        } else {
+            // Game over logic
+            document.getElementById('score-section').classList.remove('hidden');
+            document.getElementById('play-ground').classList.add('hidden');
+            document.getElementById('score-board').innerText = document.getElementById('current-score').innerText;
+            document.getElementById(expectedAlphabet).classList.remove('bg-orange-400');
         }
-
-        if (life === 0) {
-            const scoreSection = document.getElementById('score-section');
-
-            scoreSection.classList.remove('hidden');
-
-            const playGroundSection = document.getElementById('play-ground');
-            playGroundSection.classList.add('hidden');
-
-            const scoreBoardElement = document.getElementById('score-board');
-
-            scoreBoardElement.innerText= document.getElementById('current-score').innerText;
-
-            const element = document.getElementById(expectedAlphabet);
-            element.classList.remove('bg-orange-400');
-
-        }
-
-
-
     }
-
 }
-
 //capture keypress
 document.addEventListener('keydown', keyboardButtonPress);
 
@@ -113,17 +88,18 @@ function play() {
 }
 
 function playAgain(){
-    const homeSection = document.getElementById('home-screen');
-    homeSection.classList.remove('hidden');
+    // Reset all keyboard button colors
+    const alphabetLetters = 'abcdefghijklmnopqrstuvwxyz';
+    alphabetLetters.split('').forEach(letter => {
+        document.getElementById(letter).classList.remove('bg-red-700');
+    });
 
-    const scoreSection = document.getElementById('score-section');
+    // Reset game stats
+    document.getElementById('current-score').innerText = '0';
+    document.getElementById('current-life').innerText = '5';
 
-    scoreSection.classList.add('hidden');
-
-    const currentScoreElement = document.getElementById('current-score');
-    currentScoreElement.innerText='0';
-
-    const currentLifeElement = document.getElementById('current-life');
-    currentLifeElement.innerText = '5';
+    // Show home screen and hide scoreboard
+    document.getElementById('home-screen').classList.remove('hidden');
+    document.getElementById('score-section').classList.add('hidden');
 
 }
